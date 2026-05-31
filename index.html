@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+
+  <!-- ========================================
+       基本設定
+  ======================================== -->
+
+  <meta charset="UTF-8">
+
+  <!-- ブラウザのタブ名 -->
+
+  <title>ストライクバトル練習ツール</title>
+
+  <!-- ========================================
+       CSS読込
+  ======================================== -->
+
+  <link rel="stylesheet" href="./css/style.css">
+
+</head>
+
+<body>
+
+  <!-- ========================================
+       アプリ全体
+  ======================================== -->
+
+  <div class="app">
+
+
+<!-- タイトル -->
+<h1>ストライクバトル 練習ツール</h1>
+
+<div class="main">
+
+  <!-- ========================================
+       左パネル（設定）
+  ======================================== -->
+  <section class="panel">
+    <h2>設定</h2>
+      <button class="speed-btn" data-speed="100">超低速</button>
+      <button class="speed-btn" data-speed="200">低速</button>
+      <button class="speed-btn active" data-speed="300">通常</button>
+      <button class="speed-btn" data-speed="450">高速</button>
+      <button class="speed-btn" data-speed="600">超高速</button>
+      <button class="speed-btn" data-speed="random">ランダム</button>
+</section>
+
+  <!-- ========================================
+       中央ゲージエリア
+       ストライク_見た目を表示
+  ======================================== -->
+  <section class="gauge-area gauge-right-space">
+    
+    <!-- パーフェクト表示 -->
+    <div id="perfectMessage"></div>
+
+    <svg
+      id="gaugeSvg"
+      width="500"
+      height="600"
+      viewBox="0 0 500 600">
+
+      <!-- SVGはJSから生成 -->
+
+    </svg>
+
+  </section>
+
+  <!-- ========================================
+       右パネル（結果）
+  ======================================== -->
+  <section class="panel">
+    <h2>結果</h2>
+    <!-- 現在結果 -->
+    <div id="resultValue">
+        &nbsp;
+    </div>
+    <hr />
+    <!-- 履歴 -->
+    <div id="history"></div>
+</section>
+
+</div>
+
+
+  </div>
+
+  <!-- ========================================
+       JavaScript読込
+       読込順は重要
+  ======================================== -->
+
+  <!-- 設定値 -->
+
+  <script src="./js/config.js"></script>
+
+  <!-- ストライク_見た目描画 -->
+
+  <script src="./js/gauge.js"></script>
+
+  <!-- メイン処理 -->
+
+  <script src="./js/main.js"></script>
+
+</body>
+</html>
