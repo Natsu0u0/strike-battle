@@ -34,7 +34,7 @@ function getRandomSpeed() {
     const speedList = [
         100,
         200,
-        300,
+        320,
         450,
         600
     ];
