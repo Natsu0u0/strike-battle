@@ -39,10 +39,22 @@ initialPercent: 70,
 // メモリ位置
 targetPercent: 80,
 
-// 移動速度
-speed: 300,
+/* ========================================
+   速度設定
+======================================== */
+
+speeds: {
+
+    ultraSlow: 180,
+    slow: 250,
+    normal: 350,
+    fast: 550,
+    ultraFast: 800
+
+},
+
+// 初期速度
+speed: 350,
 
 // 再開までの待機時間(ms)
-restartDelay: 2000
-
-};
+restartDelay: 2000};

@@ -33,9 +33,13 @@ margin-bottom: 30px;
 
 .main {
     display: flex;
+    grid-template-columns: 220px 500px 220px;
+
     justify-content: center;
-    align-items: center;
-    gap: 100px;
+    align-items: start;
+
+    /* ★行高さ固定 */
+    height: 600px;
 }
 
 /* ========================================
@@ -51,6 +55,9 @@ margin-bottom: 30px;
     background: #111;
     display: flex;
     flex-direction: column;
+
+    /* ★これ追加 */
+    justify-content: flex-start;
 }
 
 /* ========================================
@@ -81,8 +88,6 @@ cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    /* ゲージだけ少し左へ */
-    margin-left: -80px;
 }
 
 /* ========================================
@@ -149,4 +154,65 @@ overflow: visible;
 
 .gauge-right-space {
     margin-right: 120px;
+}
+
+/* ========================================
+   カウントダウン
+======================================== */
+
+.countdown-panel {
+
+    width: 120px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    /* ★左に寄せる */
+    transform: translateX(-250px);
+
+    /* ★さらに下へ */
+    margin-top: 380px;
+}
+
+#countdownLabel {
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+}
+
+#countdownValue {
+
+    width: 110px;
+    height: 110px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 56px;
+    font-weight: bold;
+
+    /* 枠線：黒 */
+    border: 3px solid #000;
+
+    border-radius: 10px;
+
+    background: #111;
+
+    /* 基本は赤 */
+    color: #ff2a2a;
+
+    /* グラデ対応（対応ブラウザなら） */
+    background-image: linear-gradient(
+        to bottom,
+        #ffffff,
+        #ff2a2a
+    );
+
+    /* 文字にグラデをかける */
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }

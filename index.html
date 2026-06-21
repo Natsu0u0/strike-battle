@@ -40,13 +40,13 @@
   ======================================== -->
   <section class="panel">
     <h2>設定</h2>
-      <button class="speed-btn" data-speed="100">超低速</button>
-      <button class="speed-btn" data-speed="200">低速</button>
-      <button class="speed-btn active" data-speed="300">通常</button>
-      <button class="speed-btn" data-speed="450">高速</button>
-      <button class="speed-btn" data-speed="600">超高速</button>
+      <button class="speed-btn" data-speed="ultraSlow">超低速</button>
+      <button class="speed-btn" data-speed="slow">低速</button>
+      <button class="speed-btn active" data-speed="normal">通常</button>
+      <button class="speed-btn" data-speed="fast">高速</button>
+      <button class="speed-btn" data-speed="ultraFast">超高速</button>
       <button class="speed-btn" data-speed="random">ランダム</button>
-</section>
+  </section>
 
   <!-- ========================================
        中央ゲージエリア
@@ -68,6 +68,20 @@
     </svg>
 
   </section>
+
+<!-- ========================================
+     カウントダウン（追加）
+======================================== -->
+
+<div class="countdown-panel">
+
+  <!-- ラベル -->
+  <div id="countdownLabel">あと</div>
+
+  <!-- 数字（枠付き） -->
+  <div id="countdownValue">3</div>
+
+</div>
 
   <!-- ========================================
        右パネル（結果）

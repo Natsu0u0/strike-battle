@@ -5,19 +5,35 @@
 const speedButtons = document.querySelectorAll(".speed-btn");
 const resultValue = document.getElementById("resultValue");
 const history = document.getElementById("history");
+
+// 履歴要素チェック（安全対策）
+if (!history) {
+    console.error("history要素が見つかりません");
+}
+
 const perfectMessage = document.getElementById("perfectMessage");
 
 /* ========================================
    アニメーション状態
 ======================================== */
 
+// 現在のゲージ位置（0〜100）
 let percent = CONFIG.initialPercent;
+
+// 上下移動方向（1=上昇 / -1=下降）
 let direction = 1;
+
+// アニメーション実行フラグ
 let running = true;
+
+// 前フレーム時間
 let lastTime = null;
 
+// 現在速度（percent/sec）
 let currentSpeed = CONFIG.speed;
-let selectedSpeedMode = "300";
+
+// 選択中の速度モード（CONFIGキー or random）
+let selectedSpeedMode = "normal";
 
 /* ========================================
    結果履歴
@@ -32,20 +48,16 @@ const resultHistory = [];
 function getRandomSpeed() {
 
     const speedList = [
-        100,
-        200,
-        320,
-        450,
-        600
+        CONFIG.speeds.ultraSlow,
+        CONFIG.speeds.slow,
+        CONFIG.speeds.normal,
+        CONFIG.speeds.fast,
+        CONFIG.speeds.ultraFast
     ];
 
-    const index =
-        Math.floor(
-            Math.random() *
-            speedList.length
-        );
-    return speedList[index];
+    const index = Math.floor(Math.random() * speedList.length);
 
+    return speedList[index];
 }
 
 /* ========================================
@@ -54,31 +66,28 @@ function getRandomSpeed() {
 
 speedButtons.forEach((button) => {
 
-    button.addEventListener(
-        "pointerdown",
-        (event) => {
-            event.stopPropagation();
-            speedButtons.forEach((btn) => {
-                btn.classList.remove("active");
-            });
-            button.classList.add("active");
+    button.addEventListener("pointerdown", (event) => {
 
-            selectedSpeedMode =
-                button.dataset.speed;
-            if (
-                selectedSpeedMode ===
-                "random"
-            ) {
-                currentSpeed =
-                    getRandomSpeed();
-            } else {
-                currentSpeed =
-                    Number(
-                        selectedSpeedMode
-                    );
-            }
+        // ゲージクリックと干渉しないように防止
+        event.stopPropagation();
+
+        // active切り替え
+        speedButtons.forEach((btn) => {
+            btn.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        // モード取得（ultraSlow / slow / randomなど）
+        selectedSpeedMode = button.dataset.speed;
+
+        // 速度決定（CONFIG統一）
+        if (selectedSpeedMode === "random") {
+            currentSpeed = getRandomSpeed();
+        } else {
+            currentSpeed = CONFIG.speeds[selectedSpeedMode];
         }
-    );
+    });
 });
 
 /* ========================================
@@ -87,44 +96,39 @@ speedButtons.forEach((button) => {
 
 function showPerfect() {
 
-    perfectMessage.textContent =
-        "PERFECT!";
-
-    perfectMessage.style.opacity =
-        "1";
+    perfectMessage.textContent = "PERFECT!";
+    perfectMessage.style.opacity = "1";
 
     setTimeout(() => {
-
-        perfectMessage.style.opacity =
-            "0";
-
+        perfectMessage.style.opacity = "0";
     }, 1000);
-
 }
 
 /* ========================================
    判定処理
 ======================================== */
 
-function judgeResult() {
-    const roundedPercent = Math.round(percent);
+function judgeResult(finalPercent) {
 
-    // 右パネルには止めた位置の％を表示
+    const roundedPercent = Math.round(finalPercent);
+
+    // 結果表示
     resultValue.textContent = roundedPercent + "%";
 
-    // 100%付近ならPERFECT表示
+    // PERFECT判定
     if (roundedPercent === 100) {
         showPerfect();
     }
 
-    const record = roundedPercent + "%";
+    // 履歴追加（先頭に追加）
+    resultHistory.unshift(roundedPercent + "%");
 
-    resultHistory.unshift(record);
-
+    // 最大10件まで保持
     if (resultHistory.length > 10) {
         resultHistory.pop();
     }
 
+    // UI更新
     history.innerHTML = resultHistory
         .map((item, index) => `${index + 1}. ${item}`)
         .join("<br>");
@@ -136,26 +140,37 @@ function judgeResult() {
 
 function stopGauge() {
 
-    if (!running) {
-        return;
-    }
+    // すでに停止中なら無視
+    if (!running) return;
 
     running = false;
-    judgeResult();
+
+    // ★停止時の値を固定（重要）
+    const finalPercent = percent;
+
+    // バー表示
+    showBar();
+
+    // 1フレーム後に判定（描画安定化）
+    requestAnimationFrame(() => {
+        judgeResult(finalPercent);
+    });
+
+    // 再開処理
     setTimeout(() => {
-        if (
-            selectedSpeedMode ===
-            "random"
-        ) {
-            currentSpeed =
-                getRandomSpeed();
+
+        // random時は毎回速度変更
+        if (selectedSpeedMode === "random") {
+            currentSpeed = getRandomSpeed();
         }
+
+        hideBar();
 
         running = true;
         lastTime = null;
-        requestAnimationFrame(
-            animate
-        );
+
+        requestAnimationFrame(animate);
+
     }, CONFIG.restartDelay);
 }
 
@@ -165,23 +180,22 @@ function stopGauge() {
 
 function animate(timestamp) {
 
-    if (!running) {
-        return;
-    }
+    // 停止中は処理しない
+    if (!running) return;
 
+    // 初回フレーム補正
     if (lastTime === null) {
         lastTime = timestamp;
     }
 
-    const delta =
-        (timestamp - lastTime) /
-        1000;
+    // 経過時間（秒）
+    const delta = (timestamp - lastTime) / 1000;
     lastTime = timestamp;
 
-    percent +=
-        direction *
-        currentSpeed *
-        delta;
+    // 位置更新
+    percent += direction * currentSpeed * delta;
+
+    // 上限・下限で反転
     if (percent >= 100) {
         percent = 100;
         direction = -1;
@@ -191,51 +205,39 @@ function animate(timestamp) {
         percent = 0;
         direction = 1;
     }
+
     updateGauge(percent);
-    requestAnimationFrame(
-        animate
-    );
+
+    requestAnimationFrame(animate);
 }
 
 /* ========================================
    マウス・タッチで停止
 ======================================== */
 
-document.addEventListener(
-    "pointerdown",
-    (event) => {
-        if (
-            event.target.classList.contains(
-                "speed-btn"
-            )
-        ) {
-            return;
-        }
-        stopGauge();
-    }
-);
+document.addEventListener("pointerdown", (event) => {
+
+    // ボタン押下時は無視
+    if (event.target.classList.contains("speed-btn")) return;
+
+    stopGauge();
+});
 
 /* ========================================
-   Enter / Spaceで停止
+   キーボードで停止
 ======================================== */
 
-document.addEventListener(
-    "keydown",
-    (event) => {
-        if (
-            event.key === "Enter" ||
-            event.code === "Space"
-        ) {
-            event.preventDefault();
-            stopGauge();
-        }
+document.addEventListener("keydown", (event) => {
+
+    if (event.key === "Enter" || event.code === "Space") {
+
+        event.preventDefault();
+        stopGauge();
     }
-);
+});
 
 /* ========================================
    初回起動
 ======================================== */
 
-requestAnimationFrame(
-    animate
-);
+requestAnimationFrame(animate);

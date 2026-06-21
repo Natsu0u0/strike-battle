@@ -61,7 +61,7 @@ gaugeSvg.innerHTML = `
       x2="309.9"
       y2="218"
       stroke="#ffffff"
-      stroke-width="4" />
+      stroke-width="3" />
 
   </g>
 `;
@@ -137,6 +137,18 @@ function updateGauge(percent) {
 }
 
 /* ========================================
+   バー表示制御
+======================================== */
+
+function showBar() {
+    barLine.style.opacity = "1";
+}
+
+function hideBar() {
+    barLine.style.opacity = "0";
+}
+
+/* ========================================
    初期描画
 ======================================== */
 
@@ -145,3 +157,6 @@ updateBarLine(targetLine, CONFIG.targetPercent);
 
 // 70%位置にバー表示
 updateGauge(CONFIG.initialPercent);
+
+// 動いているときバー非表示
+hideBar();
