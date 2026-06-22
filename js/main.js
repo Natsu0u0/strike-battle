@@ -14,6 +14,37 @@ if (!history) {
 const perfectMessage = document.getElementById("perfectMessage");
 
 /* ========================================
+   スタート画面
+======================================== */
+
+const startScreen =
+    document.getElementById(
+        "startScreen"
+    );
+
+const startButton =
+    document.getElementById(
+        "startButton"
+    );
+
+const gameScreen =
+    document.getElementById(
+        "gameScreen"
+    );
+
+/* ========================================
+   カウントダウン
+======================================== */
+
+const countdownValue =
+    document.getElementById(
+        "countdownValue"
+    );
+
+let countdownTimer = null;
+let countdown = 3;
+
+/* ========================================
    アニメーション状態
 ======================================== */
 
@@ -105,6 +136,77 @@ function showPerfect() {
 }
 
 /* ========================================
+   カウントダウン開始
+======================================== */
+
+function startCountdown() {
+
+    clearInterval(
+        countdownTimer
+    );
+
+    countdown = 3;
+
+    countdownValue.textContent =
+        countdown;
+
+    countdownTimer =
+        setInterval(() => {
+
+            countdown--;
+
+            countdownValue.textContent =
+                countdown;
+
+            if (
+                countdown <= 0
+            ) {
+
+                clearInterval(
+                    countdownTimer
+                );
+
+                timeUp();
+            }
+
+        }, 1000);
+}
+
+/* ========================================
+   TIME UP
+======================================== */
+
+function timeUp() {
+
+    if (!running) {
+        return;
+    }
+
+    running = false;
+
+    resultValue.textContent =
+        "TIME UP";
+
+    showBar();
+
+    setTimeout(() => {
+
+        hideBar();
+
+        running = true;
+
+        lastTime = null;
+
+        startCountdown();
+
+        requestAnimationFrame(
+            animate
+        );
+
+    }, CONFIG.restartDelay);
+}
+
+/* ========================================
    判定処理
 ======================================== */
 
@@ -143,6 +245,10 @@ function stopGauge() {
     // すでに停止中なら無視
     if (!running) return;
 
+    clearInterval(
+    countdownTimer
+);
+
     running = false;
 
     // ★停止時の値を固定（重要）
@@ -169,7 +275,30 @@ function stopGauge() {
         running = true;
         lastTime = null;
 
+        startCountdown();
         requestAnimationFrame(animate);
+
+        /* ========================================
+        練習開始
+        ======================================== */
+
+        startButton.addEventListener(
+            "click",
+            () => {
+
+                startScreen.style.display =
+                    "none";
+
+                gameScreen.style.display =
+                    "block";
+
+                startCountdown();
+
+                requestAnimationFrame(
+                    animate
+                );
+            }
+        );
 
     }, CONFIG.restartDelay);
 }
@@ -237,7 +366,33 @@ document.addEventListener("keydown", (event) => {
 });
 
 /* ========================================
-   初回起動
+   練習開始
 ======================================== */
 
-requestAnimationFrame(animate);
+startButton.addEventListener(
+    "click",
+    () => {
+
+        startScreen.style.display =
+            "none";
+
+        gameScreen.style.display =
+            "block";
+
+        countdownValue.textContent =
+            "3";
+
+        setTimeout(() => {
+
+            running = true;
+
+            startCountdown();
+
+            requestAnimationFrame(
+                animate
+            );
+
+        }, 1000);
+
+    }
+);

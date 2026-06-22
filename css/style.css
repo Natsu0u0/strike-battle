@@ -43,6 +43,65 @@ margin-bottom: 30px;
 }
 
 /* ========================================
+   画面全体
+======================================== */
+
+body {
+    margin: 0;
+
+    background-image: url("../img/stadium.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    color: white;
+    font-family: sans-serif;
+}
+
+/* ========================================
+   スタート画面
+======================================== */
+
+#startScreen {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(0, 0, 0, 0.85);
+
+    z-index: 9999;
+}
+
+#startButton {
+
+    width: 300px;
+
+    height: 80px;
+
+    font-size: 32px;
+
+    font-weight: bold;
+}
+
+#gameScreen {
+
+    display: none;
+}
+
+/* ========================================
 左右パネル
 ======================================== */
 
@@ -176,43 +235,40 @@ overflow: visible;
 }
 
 #countdownLabel {
-    font-size: 22px;
+    font-size: 26px;
     font-weight: bold;
-    color: white;
-    margin-bottom: 10px;
+
+    margin-bottom: -5px;
+
+    text-shadow:
+        -1px -1px 0 #000,
+         1px -1px 0 #000,
+        -1px  1px 0 #000,
+         1px  1px 0 #000;
 }
 
 #countdownValue {
 
-    width: 110px;
-    height: 110px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    font-size: 56px;
+    font-size: 110px;
     font-weight: bold;
 
-    /* 枠線：黒 */
-    border: 3px solid #000;
-
-    border-radius: 10px;
-
-    background: #111;
-
-    /* 基本は赤 */
-    color: #ff2a2a;
-
-    /* グラデ対応（対応ブラウザなら） */
-    background-image: linear-gradient(
+    background: linear-gradient(
         to bottom,
-        #ffffff,
-        #ff2a2a
+        #ffffff 0%,
+        #ffffff 20%,
+        #ff6666 50%,
+        #ff0000 80%,
+        #cc0000 100%
     );
 
-    /* 文字にグラデをかける */
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+
+    /* 黒縁 */
+    -webkit-text-stroke: 2px #000;
+
+    /* 発光 */
+    text-shadow:
+        0 0 8px rgba(255, 0, 0, 0.7);
 }
